@@ -1,6 +1,8 @@
-import { User } from "src/features/user/models";
+import { User } from "src/features/user";
 
 export class Message {
-  user: User;
-  text: string;
+  constructor(
+    public readonly user: User,
+    public readonly text: string
+  ) {}
 }

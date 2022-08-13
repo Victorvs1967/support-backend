@@ -1,1 +1,1 @@
-export { Message } from './models/index';
+export * from './models';

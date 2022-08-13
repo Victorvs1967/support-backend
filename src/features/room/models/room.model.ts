@@ -1,8 +1,8 @@
-import { Message } from "src/features/message/models";
-import { User } from "src/features/user/models";
+import { Message } from "src/features/message";
+import { User } from "src/features/user";
 
 export class Room {
   client: User;
-  support: User;
+  support: User | null = null;
   messages: Message[];
 }

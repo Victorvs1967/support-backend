@@ -1,28 +1,30 @@
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import * as TelegramBot from 'node-telegram-bot-api'
 
-import { RoomBuilder, RoomService } from 'src/features/room';
+import { EnvConfigKeyEnum } from 'src/core';
+import { RoomService } from 'src/features/room';
 
 @Injectable()
 export class TelegramBotListenerService {
-  private readonly botToken = '5557017123:AAEGrXmbbcWRzfNTtQeJ6-ca8vDkDPBW_Z4';
-  private readonly botInstance: TelegramBot;
+  private botInstance: TelegramBot;
 
   constructor(
+    private readonly config: ConfigService,
     private readonly roomService: RoomService,
   ) {
-    this.botInstance = new TelegramBot(this.botToken, { polling: true });
-    this.initUserMessageObserver();
+    this.initBotInstance();
+    this.initUserMessagesObserver();
   }
 
-  private initUserMessageObserver(): void {
+  private initBotInstance(): void {
+    const token = this.config.get(EnvConfigKeyEnum.BotToken);
+    this.botInstance = new TelegramBot(token, { polling: true });
+  }
+
+  private initUserMessagesObserver(): void {
     this.botInstance.on('message', telegramMessage => {
-      const room = RoomBuilder.build(telegramMessage);
-
-      console.log(telegramMessage);
-      console.log(room);
-
-      this.roomService.create(room);
+      this.roomService.create(telegramMessage);
     });
   }
 }
